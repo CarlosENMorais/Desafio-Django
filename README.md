@@ -21,16 +21,13 @@ Abra o terminal na pasta onde deseja salvar o projeto e clone o repositório:
 
 ```bash
 git clone https://github.com/CarlosENMorais/Desafio-Django.git
-cd estagio_PythonDjango # ou o nome da sua pasta
+cd .\Desafio-Django\
 ```
 
-### 2\. Garantir Permissão de Execução
+### 2\. Garantir Ending Line Sequence
 
-Antes de iniciar os contêineres pela primeira vez, torne o script de inicialização executável no seu sistema:
+Se estiver utilizando windows pode ser que a sequencia de fim de linha do arquivo entrypoint.sh seja modificado de LF para CRLF. Para garantir que o docker funcione, antes de iniciar os contêineres pela primeira vez, se certifique que a codificação está LF.
 
-```bash
-chmod +x entrypoint.sh
-```
 
 ### 3\. Inicializar os Contêineres
 
