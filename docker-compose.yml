@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  web:
+    build: .
+    container_name: django_app
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/usr/src/app
+    environment:
+      DB_HOST: db
+      DB_NAME: meu_database
+      DB_USER: postgres
+      DB_PASSWORD: minha_senha
+    
+    depends_on:
+    - db
+    entrypoint: /usr/src/app/entrypoint.sh
+  db:
+    image: postgres:14
+    container_name: postgres_django
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: minha_senha
+      POSTGRES_DB: meu_database
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

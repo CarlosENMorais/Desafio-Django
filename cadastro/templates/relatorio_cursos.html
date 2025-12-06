@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Cursos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: white;
+            color: #3498db;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .back-link:hover {
+            background: #3498db;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .filter-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .filter-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.875rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .btn-filter {
+            padding: 12px 24px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.875rem;
+        }
+
+        .btn-filter:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8f9fa;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px;
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        tbody tr {
+            transition: all 0.2s;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        td {
+            padding: 15px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .currency {
+            font-weight: 600;
+        }
+
+        .currency-positive {
+            color: #27ae60;
+        }
+
+        .currency-negative {
+            color: #e67e22;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 992px) {
+            .filter-form {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            table {
+                font-size: 0.875rem;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'home' %}" class="back-link">
+            ← Voltar ao Dashboard
+        </a>
+
+        <div class="header">
+            <h2>📊 Relatório de Cursos</h2>
+        </div>
+
+        <div class="filter-section">
+            <form method="GET" class="filter-form">
+                <div class="form-group">
+                    <label for="nome">Nome do Curso</label>
+                    <input type="text" id="nome" name="nome" value="{{ nome_curso }}" placeholder="Pesquisar curso...">
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status" name="status">
+                        <option value="">Todos</option>
+                        <option value="ativo" {% if status == "ativo" %}selected{% endif %}>Ativo</option>
+                        <option value="inativo" {% if status == "inativo" %}selected{% endif %}>Inativo</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-filter">🔍 Filtrar</button>
+            </form>
+        </div>
+
+        <div class="section">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Curso</th>
+                            <th>Carga Horária</th>
+                            <th>Valor Inscrição</th>
+                            <th>Matriculados</th>
+                            <th>Status</th>
+                            <th>Total Pago</th>
+                            <th>Total Pendente</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for curso in cursos %}
+                        <tr onclick="window.location='{% url 'editar_registro' 'cursos' curso.id %}'">
+                            <td><strong>{{ curso.nome }}</strong></td>
+                            <td>{{ curso.carga_horaria }}h</td>
+                            <td>R$ {{ curso.valor_da_inscrissao|floatformat:2 }}</td>
+                            <td>
+                                <span class="badge badge-success">{{ curso.total_matriculados }}</span>
+                            </td>
+                            <td>
+                                {% if curso.status %}
+                                    <span class="badge badge-success">✓ Ativo</span>
+                                {% else %}
+                                    <span class="badge badge-danger">✕ Inativo</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="currency currency-positive">R$ {{ curso.total_pago|default:"0.00"|floatformat:2 }}</span>
+                            </td>
+                            <td>
+                                <span class="currency currency-negative">R$ {{ curso.total_pendente|default:"0.00"|floatformat:2 }}</span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">📚</div>
+                                    <p>Nenhum curso encontrado com os filtros selecionados.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

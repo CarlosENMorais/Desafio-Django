@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Alunos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8f9fa;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px;
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 2px solid #e9ecef;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+            position: relative;
+        }
+
+        th:hover {
+            background: #e9ecef;
+        }
+
+        th:after {
+            content: '⇅';
+            position: absolute;
+            right: 15px;
+            opacity: 0.4;
+            font-size: 0.8rem;
+        }
+
+        th:last-child {
+            cursor: default;
+        }
+
+        th:last-child:after {
+            content: '';
+        }
+
+        tbody tr {
+            transition: all 0.2s;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        td {
+            padding: 15px;
+            color: #2c3e50;
+        }
+
+        td:first-child {
+            font-weight: 600;
+            color: #3498db;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .badge-secondary {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: white;
+            color: #3498db;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .back-link:hover {
+            background: #3498db;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-historico {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(52, 152, 219, 0.2);
+        }
+
+        .btn-historico:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-historico:active {
+            transform: translateY(0);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            table {
+                font-size: 0.875rem;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .btn-historico {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+
+    <script>
+        function sortTable(n) {
+            let table = document.getElementById("tabela");
+            let rows = Array.from(table.rows).slice(1);
+            let asc = table.getAttribute("data-sort") !== "asc";
+            table.setAttribute("data-sort", asc ? "asc" : "desc");
+
+            rows.sort((a, b) => {
+                let x = a.cells[n].innerText.toLowerCase();
+                let y = b.cells[n].innerText.toLowerCase();
+                
+                // Se for número, converte para número antes de comparar
+                if (!isNaN(x) && !isNaN(y)) {
+                    return asc ? Number(x) - Number(y) : Number(y) - Number(x);
+                }
+                
+                return asc ? x.localeCompare(y) : y.localeCompare(x);
+            });
+
+            rows.forEach(r => table.appendChild(r));
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'home' %}" class="back-link">
+            ← Voltar ao Dashboard
+        </a>
+
+        <div class="header">
+            <h2>📄 Relatório de Alunos</h2>
+        </div>
+
+        <div class="section">
+            <div class="table-container">
+                <table id="tabela" data-sort="asc">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable(0)">Aluno</th>
+                            <th onclick="sortTable(1)">Matrículas Ativas</th>
+                            <th onclick="sortTable(2)">Ativas Pagas</th>
+                            <th onclick="sortTable(3)">Ativas não Pagas</th>
+                            <th onclick="sortTable(4)">Inativas</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for aluno in dados %}
+                        <tr onclick="window.location='{% url 'editar_registro' 'alunos' aluno.id %}'">
+                            <td>{{ aluno.nome }}</td>
+                            <td>
+                                <span class="badge badge-info">{{ aluno.matriculas_ativas }}</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-success">{{ aluno.matriculas_ativas_pagas }}</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-warning">{{ aluno.matriculas_ativas_pendentes }}</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-secondary">{{ aluno.matriculas_inativas }}</span>
+                            </td>
+                            <td>
+                                <a href="{% url 'historico' aluno.id %}" target="_blank" class="btn-historico">
+                                    📋 Histórico
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">📭</div>
+                                    <p>Nenhum aluno cadastrado no sistema.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

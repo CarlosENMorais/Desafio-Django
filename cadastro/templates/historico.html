@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de {{ aluno.nome }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            padding: 40px;
+            background: #f5f7fa;
+            color: #2c3e50;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .header {
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 0.875rem;
+        }
+        .info-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .info-row {
+            display: flex;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            font-weight: 600;
+            width: 200px;
+            color: #2c3e50;
+        }
+        .info-value {
+            color: #555;
+        }
+        h2 {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+        .matricula-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+        }
+        .matricula-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .curso-nome {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #2c3e50;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+                .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: white;
+            color: #3498db;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .back-link:hover {
+            background: #3498db;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+        .matricula-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            font-size: 0.875rem;
+            color: #555;
+        }
+        .totals-section {
+            background: #e8f4f8;
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            font-size: 1.1rem;
+        }
+        .total-row.main {
+            border-top: 2px solid #3498db;
+            padding-top: 15px;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+        .total-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .total-value {
+            font-weight: bold;
+        }
+        .total-value.positive {
+            color: #27ae60;
+        }
+        .total-value.negative {
+            color: #e67e22;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e9ecef;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.875rem;
+        }
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <a href="{% url 'home' %}" class="back-link">
+            ← Voltar ao Inicio
+        </a>
+        <div class="header">
+            <h1>📋 Histórico Acadêmico</h1>
+            <p class="subtitle">Documento gerado automaticamente</p>
+        </div>
+        
+        <div class="info-section" style="display:flex; gap:25px; justify-content:space-between; flex-wrap:wrap;">
+
+    <!-- 🔹 Informações do aluno -->
+    <div style="flex:1; min-width:280px;">
+        <h2 style="font-size:1.25rem; margin-bottom:15px;">Informações do Aluno</h2>
+
+        <div class="info-row">
+            <span class="info-label">Nome Completo:</span>
+            <span class="info-value">{{ aluno.nome }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Email:</span>
+            <span class="info-value">{{ aluno.email }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">CPF:</span>
+            <span class="info-value">{{ aluno.cpf }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Data de Ingresso:</span>
+            <span class="info-value">{{ aluno.data_de_ingresso|date:"d/m/Y" }}</span>
+        </div>
+    </div>
+
+    <!-- 🔹 Resumo Acadêmico (agora ao lado e no mesmo estilo) -->
+    <div style="flex:1; min-width:280px;">
+        <h2 style="font-size:1.25rem; margin-bottom:15px;">Resumo Acadêmico</h2>
+
+        <div class="info-row">
+            <span class="info-label">Total de Horas:</span>
+            <span class="info-value">{{ total_horas }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Horas em Cursos Ativos:</span>
+            <span class="info-value">{{ horas_ativas }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Horas em Cursos Inativos:</span>
+            <span class="info-value">{{ horas_inativas }}</span>
+        </div>
+    </div>
+
+</div>
+
+        
+        <h2>📚 Matrículas Realizadas</h2>
+        <div class="matriculas-list">
+    {% if matriculas %}
+        {% for matricula in matriculas %}
+        <div class="matricula-item">
+            <div class="matricula-header">
+                <span class="curso-nome">{{ matricula.curso.nome }}</span>
+
+                <!-- Situação do Pagamento -->
+                {% if matricula.pago %}
+                <span class="badge badge-success">✓ Pago</span>
+                {% else %}
+                <span class="badge badge-warning">⏳ Pendente</span>
+                {% endif %}
+            </div>
+
+            <div class="matricula-details">
+                <div><strong>Carga Horária:</strong> {{ matricula.curso.carga_horaria }}h</div>
+                <div><strong>Data Matrícula:</strong> {{ matricula.data_matricula|date:"d/m/Y" }}</div>
+
+                <!-- 🔥 STATUS DO CURSO (ativo ou inativo) -->
+                <div>
+                    <strong>Status do Curso:</strong>
+
+                    {% if matricula.curso.status %}
+                        <span style="color:#16a34a; font-weight:bold;">Ativo</span>
+                    {% else %}
+                        <span style="color:#dc2626; font-weight:bold;">Inativo</span>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p style="text-align: center; color: #7f8c8d; padding: 30px;">Nenhuma matrícula encontrada.</p>
+    {% endif %}
+</div>
+
+        
+        <div class="footer">
+            <p>Este documento foi gerado automaticamente pelo Sistema de Matrículas</p>
+            <p>Total de matrículas: {{ matriculas|length }}</p>
+        </div>
+    </div>
+</body>
+</html>
