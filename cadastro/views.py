@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse, HttpResponse
+from django.db import connection
 from django.db.models import Sum, Q, Count, DecimalField, Case, When
 from django.db.models.functions import Coalesce
 from django.views.decorators.csrf import csrf_exempt
@@ -9,14 +10,51 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from .models import Aluno, Curso, Matricula
 from datetime import date
-
 from django import forms
 
 ## HOME 
 def home(request):
+    with connection.cursor() as cursor:
 
+        # Total de alunos cadastrados
+        cursor.execute("SELECT COUNT(*) FROM cadastro_aluno;")
+        total_alunos = cursor.fetchone()[0]
+
+        # Total de cursos ativos (status = TRUE)
+        cursor.execute("SELECT COUNT(*) FROM cadastro_curso WHERE status = TRUE;")
+        cursos_ativos = cursor.fetchone()[0]
+
+        # Matrículas pagas e pendentes
+        cursor.execute("SELECT COUNT(*) FROM cadastro_matricula WHERE pago = TRUE;")
+        matriculas_pagas = cursor.fetchone()[0]
+
+        cursor.execute("SELECT COUNT(*) FROM cadastro_matricula WHERE pago = FALSE;")
+        matriculas_pendentes = cursor.fetchone()[0]
+
+        # Soma dos valores pagos e não pagos
+        cursor.execute("""
+            SELECT COALESCE(SUM(c.valor_da_inscrissao), 0)
+            FROM cadastro_matricula m
+            JOIN cadastro_curso c ON c.id = m.curso_id
+            WHERE m.pago = TRUE;
+        """)
+        valor_pago = cursor.fetchone()[0]
+
+        cursor.execute("""
+            SELECT COALESCE(SUM(c.valor_da_inscrissao), 0)
+            FROM cadastro_matricula m
+            JOIN cadastro_curso c ON c.id = m.curso_id
+            WHERE m.pago = FALSE;
+        """)
+        valor_pendente = cursor.fetchone()[0]
+    
     context = {
-
+        "total_alunos": total_alunos,
+        "cursos_ativos": cursos_ativos,
+        "matriculas_pagas": matriculas_pagas,
+        "matriculas_pendentes": matriculas_pendentes,
+        "valor_pago": valor_pago,
+        "valor_pendente": valor_pendente,
     }
     
     return render(request, 'homepage.html', context)
